@@ -98,4 +98,26 @@ class CreateUser extends Controller
             return redirect()->route('list-user')->with('error', 'User not found');
         }
     }
+
+    public function approveAll()
+{
+    if (auth()->user()->jabatan === 'Kaprodi') {
+        // Approve all students
+        User::where('jabatan', 'Mahasiswa')->where('approved', false)->update(['approved' => true]);
+    }
+    
+    return redirect()->route('list-user')->with('success', 'All students approved successfully.');
+}
+
+public function cancelAll()
+{
+    if (auth()->user()->jabatan === 'Kaprodi') {
+        // Cancel approval for all students
+        User::where('jabatan', 'Mahasiswa')->where('approved', true)->update(['approved' => false]);
+    }
+    
+    return redirect()->route('list-user')->with('success', 'All students approval cancelled successfully.');
+}
+
+
 }

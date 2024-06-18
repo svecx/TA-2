@@ -35,28 +35,41 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($users as $user)
-                            <tr>
-                                <td>{{ $user->name }}</td>
-                                <td>{{ $user->email }}</td>
-                                <td>{{ $user->jabatan }}</td>
-                                <td>{{ $user->approved ? 'Diizinkan' : 'Tidak Diizinkan' }}</td>
-                                <td>
-                                    <a href="{{ route('edit-user', $user->id) }}" class="btn btn-primary">Edit</a>
-                                    <form action="{{ route('approve-user', $user->id) }}" method="POST" style="display: inline-block;">
-                                        @csrf
-                                        @method('PUT')
-                                        @if ($user->approved)
-                                            <button type="submit" class="btn btn-danger">Cancel</button>
-                                        @else
-                                            <button type="submit" class="btn btn-success">Approve</button>
-                                        @endif
-                                    </form>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
+    @foreach($users as $user)
+        @if(auth()->user()->jabatan !== 'Kaprodi' || $user->jabatan === 'Mahasiswa')
+            <tr>
+                <td>{{ $user->name }}</td>
+                <td>{{ $user->email }}</td>
+                <td>{{ $user->jabatan }}</td>
+                <td>{{ $user->approved ? 'Diizinkan' : 'Tidak Diizinkan' }}</td>
+                <td>
+                    <a href="{{ route('edit-user', $user->id) }}" class="btn btn-primary">Edit</a>
+                    <form action="{{ route('approve-user', $user->id) }}" method="POST" style="display: inline-block;">
+                        @csrf
+                        @method('PUT')
+                        @if ($user->approved)
+                            <button type="submit" class="btn btn-danger">Cancel</button>
+                        @else
+                            <button type="submit" class="btn btn-success">Approve</button>
+                        @endif
+                    </form>
+                </td>
+            </tr>
+        @endif
+    @endforeach
+</tbody>
+
                 </table>
+                @if(auth()->user()->jabatan === 'Kaprodi')
+                        @php
+                            $allApproved = $users->where('jabatan', 'Mahasiswa')->where('approved', false)->isEmpty();
+                        @endphp
+                        <form action="{{ $allApproved ? route('cancel-all') : route('approve-all') }}" method="POST">
+                            @csrf
+                            @method('PUT')
+                            <button type="submit" class="btn btn-success">{{ $allApproved ? 'Cancel All' : 'Approve All' }}</button>
+                        </form>
+                    @endif
             </div>
         </div>
     </div>

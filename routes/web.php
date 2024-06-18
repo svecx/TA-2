@@ -72,6 +72,9 @@ Route::delete('/draft/{id}', [DraftDocumentController::class, 'delete'])->name('
 Route::get('/dokumens', [DraftDocumentController::class, 'index'])->name('dokumens.index');
 Route::delete('/dokumens/{id}/draft', [DraftDocumentController::class, 'moveToDraft'])->name('dokumens.moveToDraft');
 Route::get('/draft-dokumen', [DraftDocumentController::class, 'index'])->name('draft-dokumen');
+Route::put('/approve-all', [CreateUser::class, 'approveAll'])->name('approve-all');
+Route::put('/cancel-all', [CreateUser::class, 'cancelAll'])->name('cancel-all');
+
 
 
 
