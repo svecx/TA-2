@@ -49,7 +49,7 @@ class LoginController extends Controller
             auth()->logout();
 
             if ($user->jabatan === 'Mahasiswa') {
-                return redirect('/login')->withErrors([
+                return redirect('/2')->withErrors([
                     'email' => 'Akun Anda belum diverifikasi. Mohon untuk menghubungi Kaprodi untuk verifikasi.'
                 ]);
             } else {
