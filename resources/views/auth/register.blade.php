@@ -62,25 +62,26 @@
                         </div>
 
                         <div class="row mb-3">
-                        <label for="jabatan" class="col-md-4 col-form-label text-md-end">Jabatan:</label>
-                    <div class="col-md-6">
-                        <select name="jabatan" id="jabatan" class="form-control" required>
-                            <option value="Kajur">Ketua Jurusan</option>
-                            <option value="Sekjur">Sekretaris Jurusan</option>
-                            <option value="Kaprodi">Kaprodi</option>
-                            <option value="Dosen">Dosen</option>
-                            <option value="Adm">Adm</option>
-                            <option value="Mahasiswa">Mahasiswa</option>
-                            <option value="Admin">Admin</option>
-                        </select>
-                    </div>
+                            <label for="jabatan" class="col-md-4 col-form-label text-md-end">Jabatan:</label>
+                            <div class="col-md-6">
+                                <select name="jabatan" id="jabatan" class="form-control" required>
+                                    <option value="Kajur">Ketua Jurusan</option>
+                                    <option value="Sekjur">Sekretaris Jurusan</option>
+                                    <option value="Kaprodi">Kaprodi</option>
+                                    <option value="Dosen">Dosen</option>
+                                    <option value="Adm">Adm</option>
+                                    <option value="Mahasiswa">Mahasiswa</option>
+                                    <option value="Admin">Admin</option>
+                                </select>
+                            </div>
                         </div>
 
                         <div class="row mb-0">
-                            <div class="col-md-6 offset-md-4">
-                                <button type="submit" class="btn btn-primary">
+                            <div class="col-md-6 offset-md-4 ">
+                                <button type="submit" class="btn btn btn-success">
                                     {{ __('Register') }}
                                 </button>
+    
                             </div>
                         </div>
                     </form>

@@ -93,6 +93,9 @@
                             <a href="{{ asset('storage/documents/' . $document->dokumen_file) }}" class="btn btn-link p-0" style="display: inline-block;margin-right: 0.3rem" download>
                                 <i class="fa fa-download"></i>
                             </a>
+                            <a href="{{ route('dokumen.history', $document->id) }}" class="btn btn-link p-0" style="display: inline-block;margin-right: 0.3rem">
+                                <i class="fa fa-history" aria-hidden="true" style="color: blue;"></i>
+                            </a>
                             <!-- Icon untuk delete -->
                             <form action="{{ route('dokumen.moveToDraft', $document->id) }}" method="POST" style="display: inline-block; margin: 0; padding: 0;">
                                 @csrf
@@ -126,6 +129,9 @@
                             </a>
                             <a href="{{ asset('storage/documents/' . $document->dokumen_file) }}" class="btn btn-link p-0" style="display: inline-block;margin-right: 0.3rem" download>
                                 <i class="fa fa-download"></i>
+                            </a>
+                            <a href="{{ route('dokumen.history', $document->id) }}" class="btn btn-link p-0" style="display: inline-block;margin-right: 0.3rem">
+                                <i class="fa fa-history" aria-hidden="true" style="color: blue;"></i>
                             </a>
                             <!-- Icon untuk delete -->
                             <form action="{{ route('dokumen.moveToDraft', $document->id) }}" method="POST" style="display: inline-block; margin: 0; padding: 0;">

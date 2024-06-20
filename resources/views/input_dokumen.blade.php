@@ -95,7 +95,7 @@
     <div class="form-label">
         <div>
             <label for="User">User:</label>
-            <input type="text" id="User" name="Create_by" class="form-control" placeholder="User" required>
+            <input type="text" id="User" name="Create_by" class="form-control" placeholder="User" required disabled>
         </div>
     </div>
 
