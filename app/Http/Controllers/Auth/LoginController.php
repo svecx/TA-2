@@ -29,18 +29,34 @@ class LoginController extends Controller
         } elseif (!Hash::check($request->password, $user->password)) {
             // Jika username/email ditemukan tetapi password salah
             $errorMessages['password'] = 'Password salah.';
-        }
-
-        if ($user === null && !empty($request->password)) {
-            // Jika username/email dan password salah
-            $errorMessages = [
-                'email' => 'Username dan Password salah.',
-                'password' => 'Username dan Password salah.'
-            ];
+        } elseif (!$user->approved) {
+            // Jika akun belum diapprove
+            if ($user->jabatan === 'Mahasiswa') {
+                $errorMessages['email'] = 'Akun Anda belum diverifikasi. Mohon untuk menghubungi Kaprodi untuk verifikasi.';
+            } else {
+                $errorMessages['email'] = 'Akun Anda belum diverifikasi. Mohon untuk menghubungi Admin untuk verifikasi.';
+            }
         }
 
         if (!empty($errorMessages)) {
             throw ValidationException::withMessages($errorMessages);
+        }
+    }
+
+    protected function authenticated(Request $request, $user)
+    {
+        if (!$user->approved) {
+            auth()->logout();
+
+            if ($user->jabatan === 'Mahasiswa') {
+                return redirect('/login')->withErrors([
+                    'email' => 'Akun Anda belum diverifikasi. Mohon untuk menghubungi Kaprodi untuk verifikasi.'
+                ]);
+            } else {
+                return redirect('/login')->withErrors([
+                    'email' => 'Akun Anda belum diverifikasi. Mohon untuk menghubungi Admin untuk verifikasi.'
+                ]);
+            }
         }
     }
 }
