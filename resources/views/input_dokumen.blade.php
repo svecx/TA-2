@@ -100,36 +100,36 @@
 </div>
 
 <div class="form-label">
-    <div>
-        <label for="permissions">Izinkan siapa saja yang melihat:</label>
+        <div>
+            <label for="permissions">Izinkan siapa saja yang melihat:</label>
+        </div>
+        <div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="kajur" name="permissions[]" value="kajur">
+                <label class="form-check-label" for="kajur">Kajur</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="sekjur" name="permissions[]" value="sekjur">
+                <label class="form-check-label" for="sekjur">Sekjur</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="kaprodi" name="permissions[]" value="kaprodi">
+                <label class="form-check-label" for="kaprodi">Kaprodi</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="dosen" name="permissions[]" value="dosen">
+                <label class="form-check-label" for="dosen">Dosen</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="adm" name="permissions[]" value="adm">
+                <label class="form-check-label" for="adm">Adm</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" id="mahasiswa" name="permissions[]" value="mahasiswa">
+                <label class="form-check-label" for="mahasiswa">Mahasiswa</label>
+            </div>
+        </div>
     </div>
-    <div>
-        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" id="kajur" name="permissions[]" value="kajur">
-            <label class="form-check-label" for="kajur">Kajur</label>
-        </div>
-        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" id="sekjur" name="permissions[]" value="sekjur">
-            <label class="form-check-label" for="sekjur">Sekjur</label>
-        </div>
-        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" id="kaprodi" name="permissions[]" value="kaprodi">
-            <label class="form-check-label" for="kaprodi">Kaprodi</label>
-        </div>
-        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" id="dosen" name="permissions[]" value="dosen">
-            <label class="form-check-label" for="dosen">Dosen</label>
-        </div>
-        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" id="adm" name="permissions[]" value="adm">
-            <label class="form-check-label" for="adm">Adm</label>
-        </div>
-        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="checkbox" id="mahasiswa" name="permissions[]" value="mahasiswa">
-            <label class="form-check-label" for="mahasiswa">Mahasiswa</label>
-        </div>
-    </div>
-</div>
 
 
     <div class="form-label">

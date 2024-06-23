@@ -27,39 +27,44 @@ class DokumenController extends Controller
     {
         $validatedData = $request->validate([
             'judul_dokumen' => 'required|string|max:255',
-            'deskripsi_dokumen' => 'required|string',
+            'deskripsi_dokumen' => 'nullable|string',
             'kategori_dokumen' => 'required|string',
             'validasi_dokumen' => 'required|string',
-            'tahun_dokumen' => 'required|int',
-            'dokumen_file' => 'required|file|mimes:pdf,docx,jpeg,png,jpg|max:2048',
+            'tahun_dokumen' => 'required|integer|min:1900|max:2100',
+            'dokumen_file' => 'required|file|mimes:pdf,doc,docx|max:2048',
             'tags' => 'nullable|string',
-            'created_by' => 'nullable|string',
+            'permissions' => 'array', // Validasi bahwa permissions adalah array
         ]);
-
-        $fileName = $request->dokumen_file->getClientOriginalName();
-        $request->dokumen_file->storeAs('public/documents', $fileName);
-        
-        // Ambil pengguna yang sedang login
-        $user = Auth::user();
-        if (!$user) {
-            return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu.');
+    
+        // Proses dan simpan file yang diunggah
+        if ($request->hasFile('dokumen_file')) {
+            $file = $request->file('dokumen_file');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $filePath = $file->storeAs('uploads', $fileName, 'public');
+        } else {
+            return redirect()->back()->withInput()->withErrors(['dokumen_file' => 'File dokumen wajib diunggah.']);
         }
-
-        // Buat dokumen dengan nilai created_by yang sesuai
+    
+        // Mengambil dan menggabungkan permissions menjadi string yang dipisahkan oleh koma
+        $permissions = implode(',', $request->input('permissions', []));
+    
+        // Simpan data dokumen ke dalam database
         $dokumen = Dokumen::create([
             'judul_dokumen' => $validatedData['judul_dokumen'],
             'deskripsi_dokumen' => $validatedData['deskripsi_dokumen'],
             'kategori_dokumen' => $validatedData['kategori_dokumen'],
             'validasi_dokumen' => $validatedData['validasi_dokumen'],
             'tahun_dokumen' => $validatedData['tahun_dokumen'],
-            'dokumen_file' => $fileName,
+            'dokumen_file' => '/storage/' . $filePath,
             'tags' => $validatedData['tags'] ?? null,
-            'status' => 'active',
-            'created_by' => $validatedData['created_by'] ?? $user->name, // Menggunakan nama pengguna yang sedang login jika tidak ada created_by
+            'view' => $permissions, // Simpan permissions di kolom view
+            'created_by' => auth()->user()->name, // Gunakan nama pengguna yang sedang login
         ]);
-
-        return redirect()->route('list-dokumen')->with('success', 'Dokumen berhasil ditambahkan!');
+    
+        // Redirect ke halaman list dokumen dengan pesan sukses
+        return redirect()->route('list-dokumen')->with('success', 'Dokumen berhasil ditambahkan.');
     }
+    
 
     public function listDokumen()
     {
@@ -100,6 +105,7 @@ class DokumenController extends Controller
             'tahun_dokumen' => 'required|int',
             'dokumen_file' => 'nullable|file|mimes:pdf,docx,jpeg,png,jpg|max:2048',
             'tags' => 'nullable|string',
+            'permissions' => 'nullable|array',
             'created_by' => 'nullable|string',
         ]);
 
@@ -112,6 +118,9 @@ class DokumenController extends Controller
             $document->dokumen_file = $fileName;
         }
 
+        // Menggabungkan nilai checkbox menjadi string terpisah koma
+        $viewPermissions = implode(',', $request->permissions ?? []);
+
         $user = Auth::user();
         if (!$user) {
             return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu.');
@@ -123,6 +132,7 @@ class DokumenController extends Controller
         $document->validasi_dokumen = $validatedData['validasi_dokumen'];
         $document->tahun_dokumen = $validatedData['tahun_dokumen'];
         $document->tags = $validatedData['tags'] ?? null;
+        $document->view = $viewPermissions; // Menyimpan nilai checkbox ke kolom view
         $document->created_by = $validatedData['created_by'] ?? $user->name;
         $document->save();
 
@@ -176,5 +186,4 @@ class DokumenController extends Controller
 
         return view('history', compact('dokumen', 'histories'));
     }
-
 }
