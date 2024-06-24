@@ -6,13 +6,12 @@ use Illuminate\Http\Request;
 use App\Models\Dokumen;
 use App\Models\Draft;
 use App\Models\History;
-use App\Models\KategoriDokumenController ;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 
-class DokumenController extends Controller
+class DokumenUserController extends Controller
 {
     public function __construct()
     {
@@ -63,24 +62,19 @@ class DokumenController extends Controller
         ]);
     
         // Redirect ke halaman list dokumen dengan pesan sukses
-        return redirect()->route('list-dokumen')->with('success', 'Dokumen berhasil ditambahkan.');
+        return redirect()->route('list-dokumen-user')->with('success', 'Dokumen berhasil ditambahkan.');
     }
     
-    public function getKategoriDokumen()
-    {
-        $kategoriDokumen = KategoriDokumen::all(); // Ambil semua data dari tabel kategori_dokumen
-        return view('get-nama-dokumen', compact('KategoriDokumen')); // Kirim data ke view
-    }
 
     public function listDokumen()
     {
         $documents = Dokumen::where('status', '!=', 'draft')->get();
-        return view('list-dokumen', ['documents' => $documents]);
+        return view('list-dokumen-user', ['documents' => $documents]);
     }
 
     public function processList(Request $request)
     {
-        return redirect()->route('list-dokumen')->with('success', 'Data berhasil diproses.');
+        return redirect()->route('list-dokumen-user')->with('success', 'Data berhasil diproses.');
     }
 
     public function edit($id)
@@ -142,7 +136,7 @@ class DokumenController extends Controller
         $document->created_by = $validatedData['created_by'] ?? $user->name;
         $document->save();
 
-        return redirect()->route('list-dokumen')->with('success', 'Details dokumen berhasil diperbarui.');
+        return redirect()->route('list-dokumen-user')->with('success', 'Details dokumen berhasil diperbarui.');
     }
 
     public function moveToDraft($id)
@@ -176,7 +170,7 @@ class DokumenController extends Controller
 
         Log::info('Dokumen dihapus dari tabel dokumens', ['document' => $document]);
 
-        return redirect()->route('list-dokumen')->with('success', 'Dokumen berhasil dihapus');
+        return redirect()->route('list-dokumen-user')->with('success', 'Dokumen berhasil dihapus');
     }
 
     public function getUserName()

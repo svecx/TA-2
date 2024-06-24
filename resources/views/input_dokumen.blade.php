@@ -7,6 +7,7 @@
         <a class="nav-link" id="v-pills-home-tab" href="{{ route('home') }}" role="tab" aria-controls="v-pills-home" aria-selected="true">Home</a>
         <a class="nav-link active" id="v-pills-profile-tab" href="{{ route('input-dokumen') }}" role="tab" aria-controls="v-pills-profile" aria-selected="false">Input Dokumen</a>
         <a class="nav-link" id="v-pills-messages-tab" href="{{ route('list-dokumen') }}" role="tab" aria-controls="v-pills-messages" aria-selected="false">List Dokumen</a>
+        <a class="nav-link" id="v-pills-messages-tab" href="{{ route('list-dokumen-user') }}" role="tab" aria-controls="v-pills-messages" aria-selected="false">Dokumen Saya</a>
         <a class="nav-link" id="v-pills-messages-tab" href="{{ route('draft-dokumen') }}" role="tab" aria-controls="v-pills-messages" aria-selected="false">Draft Dokumen</a>
         @if(auth()->check() && auth()->user()->approved && (auth()->user()->jabatan === 'Admin' || auth()->user()->jabatan === 'Kaprodi'))
         <a class="nav-link" id="v-pills-messages-tab" href="{{ route('list-user') }}" role="tab" aria-controls="v-pills-messages" aria-selected="false">List User</a>
@@ -38,7 +39,7 @@
 
     <div style="margin-left:200px; margin-top:10px">
         <label>Kategori Dokumen:</label>
-        <select name="kategori_dokumen" class="form-control" required>
+        <select name="kategori_dokumen" id="kategoriDokumen" class="form-control" required>
             @if(auth()->user()->jabatan === 'Mahasiswa' || auth()->user()->jabatan === 'Adm')
                 <option value="Dokumen Pendidikan">Dokumen Pendidikan</option>
             @elseif(auth()->user()->jabatan === 'Dosen')
@@ -100,36 +101,41 @@
 </div>
 
 <div class="form-label">
-        <div>
-            <label for="permissions">Izinkan siapa saja yang melihat:</label>
+    <div>
+        <label for="permissions">Izinkan siapa saja yang melihat:</label>
+    </div>
+    <div>
+    <div class="form-check form-check-inline">
+            <input class="form-check-input" type="checkbox" id="all" name="permissions[]" value="all">
+            <label class="form-check-label" for="all">All</label>
         </div>
-        <div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="kajur" name="permissions[]" value="kajur">
-                <label class="form-check-label" for="kajur">Kajur</label>
-            </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="sekjur" name="permissions[]" value="sekjur">
-                <label class="form-check-label" for="sekjur">Sekjur</label>
-            </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="kaprodi" name="permissions[]" value="kaprodi">
-                <label class="form-check-label" for="kaprodi">Kaprodi</label>
-            </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="dosen" name="permissions[]" value="dosen">
-                <label class="form-check-label" for="dosen">Dosen</label>
-            </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="adm" name="permissions[]" value="adm">
-                <label class="form-check-label" for="adm">Adm</label>
-            </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="checkbox" id="mahasiswa" name="permissions[]" value="mahasiswa">
-                <label class="form-check-label" for="mahasiswa">Mahasiswa</label>
-            </div>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="checkbox" id="kajur" name="permissions[]" value="kajur">
+            <label class="form-check-label" for="kajur">Kajur</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="checkbox" id="sekjur" name="permissions[]" value="sekjur">
+            <label class="form-check-label" for="sekjur">Sekjur</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="checkbox" id="kaprodi" name="permissions[]" value="kaprodi">
+            <label class="form-check-label" for="kaprodi">Kaprodi</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="checkbox" id="dosen" name="permissions[]" value="dosen">
+            <label class="form-check-label" for="dosen">Dosen</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="checkbox" id="adm" name="permissions[]" value="adm">
+            <label class="form-check-label" for="adm">Adm</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="checkbox" id="mahasiswa" name="permissions[]" value="mahasiswa">
+            <label class="form-check-label" for="mahasiswa">Mahasiswa</label>
         </div>
     </div>
+</div>
+
 
 
     <div class="form-label">
@@ -163,6 +169,48 @@ fetch('/get-user-name')
         }
     });
 
+    document.addEventListener('DOMContentLoaded', function () {
+        const allCheckbox = document.getElementById('all');
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]:not(#all)');
 
+        allCheckbox.addEventListener('change', function () {
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = this.checked;
+            });
+        });
+
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function () {
+                if (!this.checked) {
+                    allCheckbox.checked = false;
+                } else if (Array.from(checkboxes).every(cb => cb.checked)) {
+                    allCheckbox.checked = true;
+                }
+            });
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const dropdown = document.getElementById('kategoriDokumen');
+
+        // Buat permintaan ke endpoint untuk mengambil data kategori dokumen
+        fetch('/get-kategori-dokumen')
+            .then(response => response.json())
+            .then(data => {
+                // Bersihkan opsi sebelumnya
+                dropdown.innerHTML = '';
+
+                // Buat opsi baru berdasarkan data yang diterima
+                data.forEach(kategori => {
+                    const option = document.createElement('option');
+                    option.value = kategori;
+                    option.textContent = kategori;
+                    dropdown.appendChild(option);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching kategori dokumen:', error);
+            });
+    });
 </script>
 @endsection
