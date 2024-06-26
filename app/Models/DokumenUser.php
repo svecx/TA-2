@@ -21,12 +21,7 @@ class Dokumen extends Model
     public function histories()
     {
         return $this->hasMany(History::class);
-    }
-
-    public function kategori()
-    {
-        return $this->belongsTo(KategoriDokumen::class, 'kategori_dokumen', 'nama_dokumen');
-    }
+    }   
 
     public function setViewAttribute($value)
     {

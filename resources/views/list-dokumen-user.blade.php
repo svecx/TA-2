@@ -6,8 +6,8 @@
         <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical" style="position:fixed">
             <a class="nav-link" id="v-pills-home-tab" href="{{ route('home') }}" role="tab" aria-controls="v-pills-home" aria-selected="true">Home</a>
             <a class="nav-link" id="v-pills-profile-tab" href="{{ route('input-dokumen') }}" role="tab" aria-controls="v-pills-profile" aria-selected="false">Input Dokumen</a>
-            <a class="nav-link active" id="v-pills-messages-tab" href="{{ route('list-dokumen') }}" role="tab" aria-controls="v-pills-messages" aria-selected="false">List Dokumen</a>
-            <a class="nav-link" id="v-pills-messages-tab" href="{{ route('list-dokumen-user') }}" role="tab" aria-controls="v-pills-messages" aria-selected="false">Dokumen Saya</a>
+            <a class="nav-link" id="v-pills-messages-tab" href="{{ route('list-dokumen') }}" role="tab" aria-controls="v-pills-messages" aria-selected="false">List Dokumen</a>
+            <a class="nav-link active" id="v-pills-messages-tab" href="{{ route('list-dokumen-user') }}" role="tab" aria-controls="v-pills-messages" aria-selected="false">Dokumen Saya</a>
             <a class="nav-link" id="v-pills-messages-tab" href="{{ route('draft-dokumen') }}" role="tab" aria-controls="v-pills-messages" aria-selected="false">Draft Dokumen</a>
             @if(auth()->check() && auth()->user()->approved && (auth()->user()->jabatan === 'Admin' || auth()->user()->jabatan === 'Kaprodi'))
         <a class="nav-link" id="v-pills-messages-tab" href="{{ route('list-user') }}" role="tab" aria-controls="v-pills-messages" aria-selected="false">List User</a>
@@ -65,76 +65,63 @@
             <th scope="col" style="width: 5rem;">Tahun</th>
             <th scope="col">File</th>
             <th scope="col">Tags</th>
-            <th scope="col" style="width: 7.5rem;">View</th>
+            <th scope="col" style="width: 7.5rem;">Aksi</th>
         </tr>
     </thead>
     <tbody id="documentTableBody">
-        @php $no = 1; @endphp
-        @foreach($documents as $index => $document)
-            @if(auth()->user()->jabatan === 'Mahasiswa' || auth()->user()->jabatan === 'Adm')
-                @if($document->kategori_dokumen === 'Dokumen Pendidikan')
-                    <tr data-category="{{ $document->kategori_dokumen }}">
-                        <td>{{ $no++ }}</td>
-                        <td>{{ $document->judul_dokumen }}</td>
-                        <td>{{ $document->deskripsi_dokumen }}</td>
-                        <td>{{ $document->kategori_dokumen }}</td>
-                        <td>{{ $document->created_by }}</td>
-                        <td>{{ $document->validasi_dokumen }}</td>
-                        <td style="max-width: 100px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $document->tahun_dokumen }}</td>
-                        <td>
-                            <a href="{{ asset('storage/documents/' . $document->dokumen_file) }}" target="_blank">
-                                <i class="fa fa-file" aria-hidden="true"></i>
-                            </a>
-                        </td>
-                        <td>{{ $document->tags }}</td>
-                        <td>
-                        {{ $document->tags }}
-                        </td>
-                    </tr>
-                @endif
-            @elseif(auth()->user()->jabatan === 'Dosen')
-                @if(in_array($document->kategori_dokumen, ['Dokumen Pendidikan', 'Dokumen Penelitian', 'Dokumen Sumber Daya Manusia']))
-                    <tr data-category="{{ $document->kategori_dokumen }}">
-                        <td>{{ $no++ }}</td>
-                        <td>{{ $document->judul_dokumen }}</td>
-                        <td>{{ $document->deskripsi_dokumen }}</td>
-                        <td>{{ $document->kategori_dokumen }}</td>
-                        <td>{{ $document->created_by }}</td>
-                        <td>{{ $document->validasi_dokumen }}</td>
-                        <td style="max-width: 100px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $document->tahun_dokumen }}</td>
-                        <td>
-                            <a href="{{ asset('storage/documents/' . $document->dokumen_file) }}" target="_blank">
-                                <i class="fa fa-file" aria-hidden="true"></i>
-                            </a>
-                        </td>
-                        <td>{{ $document->tags }}</td>
-                        <td>
-                        {{ $document->tags }}
-                        </td>
-                    </tr>
-                @endif
-            @else
-                <tr data-category="{{ $document->kategori_dokumen }}">
-                    <td>{{ $index + 1 }}</td>
-                    <td>{{ $document->judul_dokumen }}</td>
-                    <td>{{ $document->deskripsi_dokumen }}</td>
-                    <td>{{ $document->kategori_dokumen }}</td>
-                    <td>{{ $document->created_by }}</td>
-                    <td>{{ $document->validasi_dokumen }}</td>
-                    <td style="max-width: 100px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $document->tahun_dokumen }}</td>
-                    <td>
-                        <a href="{{ asset('storage/documents/' . $document->dokumen_file) }}" target="_blank">
-                            <i class="fa fa-file" aria-hidden="true"></i>
-                        </a>
-                    </td>
-                    <td>{{ $document->tags }}</td>
-                    <td>
-                    {{ $document->view }}
-                    </td>
-                </tr>
-            @endif
-        @endforeach
-    </tbody>
+    @php $no = 1; @endphp
+    @foreach($documents as $index => $document)
+        @php
+            $currentUser = auth()->user();
+            $showDocument = false;
+            
+            // Periksa apakah created_by memiliki nama dan email yang sama dengan pengguna yang login
+            if ($document->created_by === $currentUser->name) {
+                $showDocument = true;
+            }
+        @endphp
+
+        @if($showDocument)
+            <tr data-category="{{ $document->kategori_dokumen }}">
+                <td>{{ $no++ }}</td>
+                <td>{{ $document->judul_dokumen }}</td>
+                <td>{{ $document->deskripsi_dokumen }}</td>
+                <td>{{ $document->kategori_dokumen }}</td>
+                <td>{{ $document->created_by }}</td>
+                <td>{{ $document->validasi_dokumen }}</td>
+                <td style="max-width: 100px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ $document->tahun_dokumen }}</td>
+                <td>
+                    <a href="{{ asset('storage/documents/' . $document->dokumen_file) }}" target="_blank">
+                        <i class="fa fa-file" aria-hidden="true"></i>
+                    </a>
+                </td>
+                <td>{{ $document->tags }}</td>
+                <td>
+                    <a href="{{ route('dokumen.edit', $document->id) }}" class="btn btn-link p-0" style="display: inline-block; margin-right: 0.3rem">
+                        <i class="fa fa-edit" aria-hidden="true" style="color: blue;"></i>
+                    </a>
+                    <a href="{{ asset('storage/documents/' . $document->dokumen_file) }}" class="btn btn-link p-0" style="display: inline-block;margin-right: 0.3rem" download>
+                        <i class="fa fa-download"></i>
+                    </a>
+                    <a href="{{ route('dokumen.history', $document->id) }}" class="btn btn-link p-0" style="display: inline-block;margin-right: 0.3rem">
+                        <i class="fa fa-history" aria-hidden="true" style="color: blue;"></i>
+                    </a>
+                    <!-- Icon untuk delete -->
+                    <form action="{{ route('dokumen.moveToDraft', $document->id) }}" method="POST" style="display: inline-block; margin: 0; padding: 0;">
+                        @csrf
+                        @method('POST')
+                        <button type="submit" class="btn btn-link p-0" style="border: none; background-color: transparent;" onclick="return confirm('Apakah Anda yakin ingin menghapus dokumen ini?')">
+                            <i class="fa fa-trash" aria-hidden="true" style="color: red;"></i>
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        @endif
+    @endforeach
+</tbody>
+
+
+
 </table>
 
         </div>

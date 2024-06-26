@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DokumenController;
+use App\Http\Controllers\DokumenUserController;
 use App\Http\Controllers\DraftDocumentController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CreateUser;
@@ -46,6 +47,7 @@ Route::get('dokumen/{id}/history', [DokumenController::class, 'history'])->name(
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::get('/input-dokumen', [DokumenController::class, 'input'])->name('input-dokumen');
 Route::get('/list-dokumen', [DokumenController::class, 'listDokumen'])->name('list-dokumen');
+Route::get('/list-dokumen-user', [DokumenUserController::class, 'listDokumen'])->name('list-dokumen-user');
 Route::post('simpan-dokumen', [DokumenController::class, 'store'])->name('simpan-dokumen');
 Route::post('list-dokumen/process', [DokumenController::class, 'processList'])->name('list-dokumen.process');
 Route::get('/kategori-dokumen', [DokumenController::class, 'kategori'])->name('kategori-dokumen');
@@ -74,7 +76,7 @@ Route::delete('/dokumens/{id}/draft', [DraftDocumentController::class, 'moveToDr
 Route::get('/draft-dokumen', [DraftDocumentController::class, 'index'])->name('draft-dokumen');
 Route::put('/approve-all', [CreateUser::class, 'approveAll'])->name('approve-all');
 Route::put('/cancel-all', [CreateUser::class, 'cancelAll'])->name('cancel-all');
-
+Route::get('/get-nama-dokumen', [DokumenController::class, 'getNamaDokumen']);
 
 
 
